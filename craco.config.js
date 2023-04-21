@@ -8,7 +8,14 @@ const resolve = (pathName) => path.resolve(__dirname, pathName)
 module.exports = {
   plugins: [
     {
-      plugin: CracoLessPlugin
+      plugin: CracoLessPlugin,
+      options: {
+        lessLoaderOptions: {
+          lessOptions: {
+            javascriptEnabled: true
+          }
+        }
+      }
     }
   ],
   webpack: {
