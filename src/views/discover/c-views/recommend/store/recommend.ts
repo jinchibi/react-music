@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { getBanners } from '../service/recommend'
+import { getHotRecommend, getNewAlbum } from '@/service/modules/recommend'
 
 // redux中请求异步数据，定义action
 export const fetchBannersDataAction = createAsyncThunk(
@@ -11,12 +12,34 @@ export const fetchBannersDataAction = createAsyncThunk(
   }
 )
 
+export const fetchHotRecommendAction = createAsyncThunk(
+  'hot-recommend',
+  async (args, { dispatch }) => {
+    const res = await getHotRecommend(8)
+    // console.log(res)
+    dispatch(changeHotRecommendAction(res.result))
+  }
+)
+
+export const fetchNewAlbumAction = createAsyncThunk(
+  'new-album',
+  async (arg, { dispatch }) => {
+    const res = await getNewAlbum()
+    // console.log(res)
+    dispatch(changeNewAlbumAction(res.albums))
+  }
+)
+
 interface IRecommendState {
   banners: any[]
+  hotRecommend: any[]
+  newAlbums: any[]
 }
 
 const initialState: IRecommendState = {
-  banners: []
+  banners: [],
+  hotRecommend: [],
+  newAlbums: []
 }
 
 // redux保存数据
@@ -26,10 +49,20 @@ const recommendSlice = createSlice({
   reducers: {
     changeBannersAction(state, { payload }) {
       state.banners = payload
+    },
+    changeHotRecommendAction(state, { payload }) {
+      state.hotRecommend = payload
+    },
+    changeNewAlbumAction(state, { payload }) {
+      state.newAlbums = payload
     }
   }
 })
 
-export const { changeBannersAction } = recommendSlice.actions
+export const {
+  changeBannersAction,
+  changeHotRecommendAction,
+  changeNewAlbumAction
+} = recommendSlice.actions
 
 export default recommendSlice.reducer

@@ -6,15 +6,18 @@ export function getTopBanner() {
   })
 }
 
-export function getHotRecommend() {
+export function getHotRecommend(limit = 30) {
   return hyRequest.get({
-    url: '/personalized'
+    url: '/personalized',
+    params: {
+      limit
+    }
   })
 }
 
 export function getNewAlbum(offset = 0, limit = 10) {
   return hyRequest.get({
-    url: '/album/new',
+    url: '/album/newest',
     params: {
       offset,
       limit

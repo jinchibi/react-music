@@ -28,7 +28,7 @@ const TopBanner: FC<IProps> = () => {
   // 左右两边模糊效果
   // 获取到当前图片的索引，在style上动态添加背景
   let currentIndexImgUrl
-  if (imgIndex >= 0 && banners.length > 0) {
+  if (imgIndex >= 0 && banners && banners.length > 0) {
     currentIndexImgUrl = banners[imgIndex]?.imageUrl + '?imageView&blur=40x20'
   }
   return (
@@ -55,17 +55,18 @@ const TopBanner: FC<IProps> = () => {
               ))}
           </Carousel>
           <ul className="dots">
-            {banners.map((item, index) => {
-              return (
-                <li key={item.imageUrl}>
-                  <span
-                    className={classNames('item', {
-                      active: index === imgIndex
-                    })}
-                  ></span>
-                </li>
-              )
-            })}
+            {banners &&
+              banners.map((item, index) => {
+                return (
+                  <li key={item.imageUrl}>
+                    <span
+                      className={classNames('item', {
+                        active: index === imgIndex
+                      })}
+                    ></span>
+                  </li>
+                )
+              })}
           </ul>
         </BannerLeft>
         <BannerRight>right</BannerRight>
