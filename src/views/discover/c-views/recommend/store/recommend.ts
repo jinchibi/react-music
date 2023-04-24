@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { getBanners } from '../service/recommend'
+import { getBanners, getPlayListDetail } from '../service/recommend'
 import { getHotRecommend, getNewAlbum } from '@/service/modules/recommend'
 
 // redux中请求异步数据，定义action
@@ -30,16 +30,38 @@ export const fetchNewAlbumAction = createAsyncThunk(
   }
 )
 
+const rankingIds = [19723756, 3779629, 2884035]
+export const fetchPlayListAction = createAsyncThunk(
+  'play-list',
+  (_, { dispatch }) => {
+    // for (const id of rankingIds) {
+    //   getPlayListDetail(id).then((res) => {
+    //     console.log(res)
+    //   })
+    // }
+    const promises: Promise<any>[] = []
+    for (const id of rankingIds) {
+      promises.push(getPlayListDetail(id))
+    }
+    Promise.all(promises).then((res) => {
+      const rankings = res.map((item) => item.playlist)
+      dispatch(changeRankingsAction(rankings))
+    })
+  }
+)
+
 interface IRecommendState {
   banners: any[]
   hotRecommend: any[]
   newAlbums: any[]
+  rankings: any[]
 }
 
 const initialState: IRecommendState = {
   banners: [],
   hotRecommend: [],
-  newAlbums: []
+  newAlbums: [],
+  rankings: []
 }
 
 // redux保存数据
@@ -55,6 +77,9 @@ const recommendSlice = createSlice({
     },
     changeNewAlbumAction(state, { payload }) {
       state.newAlbums = payload
+    },
+    changeRankingsAction(state, { payload }) {
+      state.rankings = payload
     }
   }
 })
@@ -62,7 +87,8 @@ const recommendSlice = createSlice({
 export const {
   changeBannersAction,
   changeHotRecommendAction,
-  changeNewAlbumAction
+  changeNewAlbumAction,
+  changeRankingsAction
 } = recommendSlice.actions
 
 export default recommendSlice.reducer

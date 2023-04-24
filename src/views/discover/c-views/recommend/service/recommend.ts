@@ -6,3 +6,12 @@ export function getBanners() {
     url: '/banner'
   })
 }
+
+export function getPlayListDetail(id: number) {
+  return hyRequest.get({
+    url: '/playlist/detail',
+    params: {
+      id
+    }
+  })
+}
