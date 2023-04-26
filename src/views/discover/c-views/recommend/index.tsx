@@ -2,6 +2,7 @@ import { useJcDispatch } from '@/store'
 import React, { memo, useEffect } from 'react'
 import type { FC, ReactNode } from 'react'
 import {
+  fetchArtistListAction,
   fetchBannersDataAction,
   fetchHotRecommendAction,
   fetchNewAlbumAction,
@@ -12,6 +13,9 @@ import { RecommendWrapper } from './style'
 import HotRecommend from './c-cpns/hot-recommend'
 import NewAlbum from './c-cpns/new-album'
 import TopRanking from './c-cpns/top-ranking'
+import UserLogin from './c-cpns/user-login'
+import HotAnchor from './c-cpns/hot-anchor'
+import SettleSinger from './c-cpns/settle-singer'
 
 interface IProps {
   children?: ReactNode
@@ -26,6 +30,7 @@ const Recommend: FC<IProps> = () => {
     dispatch(fetchHotRecommendAction())
     dispatch(fetchNewAlbumAction())
     dispatch(fetchPlayListAction())
+    dispatch(fetchArtistListAction())
   }, [])
   return (
     <RecommendWrapper>
@@ -36,7 +41,11 @@ const Recommend: FC<IProps> = () => {
           <NewAlbum />
           <TopRanking />
         </div>
-        <div className="right">right</div>
+        <div className="right">
+          <UserLogin />
+          <SettleSinger />
+          <HotAnchor />
+        </div>
       </div>
     </RecommendWrapper>
   )

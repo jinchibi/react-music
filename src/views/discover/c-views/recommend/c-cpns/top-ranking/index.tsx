@@ -17,8 +17,8 @@ const TopRanking: FC<IProps> = () => {
     <TopRankingWrapper>
       <AreaHeaderV1 title="榜单" moreLink="/discover/ranking" />
       <div className="content">
-        {rankings.map((item) => (
-          <TopRankingItem key={item.id} itemData={item} />
+        {rankings.map((item, index) => (
+          <TopRankingItem key={index} itemData={item} />
         ))}
       </div>
     </TopRankingWrapper>

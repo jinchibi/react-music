@@ -1,5 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { getBanners, getPlayListDetail } from '../service/recommend'
+import {
+  getArtistList,
+  getBanners,
+  getPlayListDetail
+} from '../service/recommend'
 import { getHotRecommend, getNewAlbum } from '@/service/modules/recommend'
 
 // redux中请求异步数据，定义action
@@ -50,18 +54,29 @@ export const fetchPlayListAction = createAsyncThunk(
   }
 )
 
+export const fetchArtistListAction = createAsyncThunk(
+  'art-list',
+  async (arg, { dispatch }) => {
+    const res = await getArtistList(5)
+    // console.log(res)
+    dispatch(changeSettleSingersAction(res.artists))
+  }
+)
+
 interface IRecommendState {
   banners: any[]
   hotRecommend: any[]
   newAlbums: any[]
   rankings: any[]
+  settleSingers: any[]
 }
 
 const initialState: IRecommendState = {
   banners: [],
   hotRecommend: [],
   newAlbums: [],
-  rankings: []
+  rankings: [],
+  settleSingers: []
 }
 
 // redux保存数据
@@ -80,6 +95,9 @@ const recommendSlice = createSlice({
     },
     changeRankingsAction(state, { payload }) {
       state.rankings = payload
+    },
+    changeSettleSingersAction(state, { payload }) {
+      state.settleSingers = payload
     }
   }
 })
@@ -88,7 +106,8 @@ export const {
   changeBannersAction,
   changeHotRecommendAction,
   changeNewAlbumAction,
-  changeRankingsAction
+  changeRankingsAction,
+  changeSettleSingersAction
 } = recommendSlice.actions
 
 export default recommendSlice.reducer
