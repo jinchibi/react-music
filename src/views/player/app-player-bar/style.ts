@@ -55,7 +55,7 @@ export const BarControl = styled.div`
     width: 36px;
     height: 36px;
     margin: 0 8px;
-    background-position: 0 -165px; // '-204px'
+    /* background-position: 0 -165px; // '-204px' */
   }
 
   .next {

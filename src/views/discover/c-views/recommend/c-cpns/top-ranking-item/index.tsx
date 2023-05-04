@@ -27,7 +27,7 @@ const TopRankingItem: FC<IProps> = (props) => {
       </div>
       <div className="list">
         {tracks &&
-          tracks.slice(0, 10).map((item: any, index: number) => {
+          tracks?.slice(0, 10)?.map((item: any, index: number) => {
             return (
               <div className="list-item" key={index}>
                 <div className="rank">{index + 1}</div>
