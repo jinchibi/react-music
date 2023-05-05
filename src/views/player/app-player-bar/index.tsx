@@ -7,18 +7,23 @@ import { Slider, message } from 'antd'
 import { useJcDispatch, useJcSelector } from '@/store'
 import { shallowEqual } from 'react-redux'
 import { getSongPlayUrl } from '@/utils/handle-player'
-import { changeLyricIndexAction } from '../store'
+import {
+  changeLyricIndexAction,
+  changeMusicAction,
+  changePlayModeAction
+} from '../store'
 
 interface IProps {
   children?: ReactNode
 }
 
 const AppPlayerBar: FC<IProps> = () => {
-  const { currentSong, lyrics, lyricIndex } = useJcSelector(
+  const { currentSong, lyrics, lyricIndex, playMode } = useJcSelector(
     (state) => ({
       currentSong: state.player.currentSong,
       lyrics: state.player.lyrics,
-      lyricIndex: state.player.lyricIndex
+      lyricIndex: state.player.lyricIndex,
+      playMode: state.player.playMode
     }),
     shallowEqual
   )
@@ -67,7 +72,7 @@ const AppPlayerBar: FC<IProps> = () => {
     // 获取当前播放时间
     const currentTime = audioRef.current!.currentTime
     if (!isSlide) {
-      // 计算当前歌曲进度
+      // 计算当前歌曲进度-
       setProgress(((currentTime * 1000) / duration) * 100)
       setCurrentTime(currentTime)
     }
@@ -97,6 +102,17 @@ const AppPlayerBar: FC<IProps> = () => {
     return time
   }
 
+  // 切换播放模式
+  function handlePlayMode() {
+    const newPlayMode = (playMode + 1) % 3
+    dispatch(changePlayModeAction(newPlayMode))
+  }
+
+  // 切换歌曲 (上一首/下一首)
+  function handleChangeMusic(type: 'left' | 'right' = 'left') {
+    dispatch(changeMusicAction(type))
+  }
+
   // 点击Slider后改变进度
   function handleSliderAfterChange(value: number) {
     const currentTime = ((value / 100) * duration) / 1000
@@ -115,21 +131,34 @@ const AppPlayerBar: FC<IProps> = () => {
     setCurrentTime(currentTime)
   }
 
+  // 时间播放完之后自动切换下一首
+  function handleTimeEnded() {
+    if (playMode === 2) {
+      audioRef.current!.currentTime = 0
+    } else dispatch(changeMusicAction('right'))
+  }
+
   return (
     <BarWrapper className="sprite_playbar">
       <div className="content wrap-v2">
         <BarControl>
-          <button className="btn sprite_playbar prev"></button>
+          <button
+            className="btn sprite_playbar prev"
+            onClick={() => handleChangeMusic('left')}
+          ></button>
           <button
             className="btn sprite_playbar play"
             onClick={handlePlayBtnClick}
             style={{ backgroundPosition: `0 -${isPlaying ? 165 : 204}px` }}
           ></button>
-          <button className="btn sprite_playbar next"></button>
+          <button
+            className="btn sprite_playbar next"
+            onClick={() => handleChangeMusic('right')}
+          ></button>
         </BarControl>
         <BarPlayInfo>
           <NavLink to="/discover/player">
-            <img src={currentSong.al?.picUrl + '?param=48x48'} alt="" />
+            <img src={currentSong?.al?.picUrl + '?param=48x48'} alt="" />
           </NavLink>
           <div className="info">
             <div className="song">
@@ -153,19 +182,26 @@ const AppPlayerBar: FC<IProps> = () => {
             </div>
           </div>
         </BarPlayInfo>
-        <BarOperator>
+        <BarOperator playMode={playMode}>
           <div className="left">
             <button className="btn sprite_playbar favor"></button>
             <button className="btn sprite_playbar share"></button>
           </div>
           <div className="right sprite_playbar">
             <button className="btn sprite_playbar volume"></button>
-            <button className="btn sprite_playbar loop"></button>
+            <button
+              className="btn sprite_playbar loop"
+              onClick={handlePlayMode}
+            ></button>
             <button className="btn sprite_playbar playlist"></button>
           </div>
         </BarOperator>
       </div>
-      <audio ref={audioRef} onTimeUpdate={handleTimeUpdate} />
+      <audio
+        ref={audioRef}
+        onTimeUpdate={handleTimeUpdate}
+        onEnded={handleTimeEnded}
+      />
     </BarWrapper>
   )
 }

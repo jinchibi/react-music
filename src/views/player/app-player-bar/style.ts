@@ -135,7 +135,11 @@ export const BarPlayInfo = styled.div`
   }
 `
 
-export const BarOperator = styled.div`
+interface IBar {
+  playMode: number
+}
+
+export const BarOperator = styled.div<IBar>`
   display: flex;
   align-items: center;
   position: relative;
@@ -172,7 +176,16 @@ export const BarOperator = styled.div`
     }
 
     .loop {
-      background-position: -66px -248px;
+      background-position: ${(prop) => {
+        switch (prop.playMode) {
+          case 1:
+            return '-66px -248px'
+          case 2:
+            return '-66px -344px'
+          default:
+            return '-3px -344px'
+        }
+      }};
     }
 
     .playlist {
